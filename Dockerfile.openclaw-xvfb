@@ -1,0 +1,43 @@
+ARG BASE_IMAGE=openclaw:local
+FROM ${BASE_IMAGE}
+
+USER root
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    xvfb \
+    xauth \
+    x11-utils \
+    chromium \
+    fonts-dejavu-core \
+    fonts-liberation \
+    ca-certificates \
+    libnss3 \
+    libx11-xcb1 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+  && rm -rf /var/lib/apt/lists/*
+
+# Required so Xvfb can create its display socket as non-root
+RUN mkdir -p /tmp/.X11-unix && chmod 1777 /tmp/.X11-unix
+
+# Optional but recommended so Chromium has room to write shared memory
+RUN mkdir -p /dev/shm || true
+
+# Add an entrypoint that starts Xvfb then execs the original command
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+USER node
+
+ENV DISPLAY=:99
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# Keep the base image default CMD. If the base image has no CMD, you can uncomment this.
+# CMD ["node", "dist/index.js", "gateway", "--bind", "lan", "--port", "18789"]
+
