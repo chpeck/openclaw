@@ -3,6 +3,12 @@ set -e
 
 export DISPLAY=:99
 
+# Clean up stale X11 sockets and locks
+rm -rf /tmp/.X11-unix/* /tmp/.X*-lock 2>/dev/null || true
+
+# Clean up stale Chromium/OpenClaw browser locks
+find /home/node/.openclaw/browser \( -name 'Singleton*' -o -name 'DevToolsActivePort' \) -print -delete 2>/dev/null || true
+
 Xvfb :99 -screen 0 1920x1080x24 -nolisten tcp -ac &
 XVFB_PID=$!
 
