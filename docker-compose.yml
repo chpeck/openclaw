@@ -27,6 +27,7 @@ services:
     ports:
       - "${OPENCLAW_GATEWAY_PORT:-18789}:18789"
       - "${OPENCLAW_BRIDGE_PORT:-18790}:18790"
+      - "5901:5900"
 
     init: true
     restart: unless-stopped
