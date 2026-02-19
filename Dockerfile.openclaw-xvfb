@@ -15,6 +15,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     fonts-dejavu-core \
     fonts-liberation \
     ca-certificates \
+    poppler-utils \
     libnss3 \
     libx11-xcb1 \
     libxcomposite1 \
